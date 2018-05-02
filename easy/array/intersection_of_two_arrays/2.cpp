@@ -31,6 +31,11 @@ public:
     }
 };
 
+// If the given array is already sorted, and the memory is limited, and (m << n or m >> n).
+// Time:  O(min(m, n) * log(max(m, n)))
+// Space: O(1)
+// Binary search solution.
+
 class Solution {
 public:
     vector<int> intersect(vector<int>& nums1, vector<int>& nums2) {
@@ -44,16 +49,62 @@ public:
         //create vector res
         vector<int> res;
         //iterate nums1, start check position of nums
+        auto start_it = nums2.cbegin();
         for(const auto& num1 : nums1){
-            auto start_it
+            start_it = std::lower_bound(start_it, nums2.cend(), num1);
+            if(start_it == nums2.cend()){
+                break;
+            }
+            if(*start_it == num1 ){
+                res.emplace_back(num1);
+                ++start_it;
+            }
+
         }
-        auto start_it = nums2.cbegin()
-        //check if we can find lower_bound of num1 in nums2
-        //if it's end(), break
-        //it's it's found, if it's equal, emplace_back to res, and also move it to found position
+        return res;
+    }
+};
+
+// If the given array is already sorted, and the memory is limited or m ~ n.
+// Time:  O(m + n)
+// Soace: O(1)
+// Two pointers solution.
+
+
+class Solution {
+public:
+    vector<int> intersect(vector<int>& nums1, vector<int>& nums2) {
+        //sort two arrays
+        std::sort(nums1.begin(), nums1.end());
+        std::sort(nums2.begin(), nums2.end());
+
+        //initialize two pointers
+        auto it1 = nums1.cbegin();
+        auto it2 = nums2.cbegin();
+        //crate result vector
+        vector<int> res;
+
+        //loop till one of the ponters is at its end
+        while(it1 != nums1.cend() && it2 != nums2.cend()){
+             //move the smaller value pointer ahead
+            if (*it1 < *it2){
+                ++it1;
+            }else if (*it1 > *it2){
+                ++it2;
+            }else{
+                 //if two pointer value are equal, move both pointers
+                res.emplace_back(*it1);
+                ++it1;
+                ++it2;
+            }
+        }
+        return res;
+
+
 
     }
 };
+
 
 
 
